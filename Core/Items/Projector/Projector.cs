@@ -3,6 +3,9 @@ using UnityEngine.Video;
 
 namespace ThePurified.Items
 {
+    /// <summary>
+    /// klasa uzywana przez projektor w jednym z pokoji w grze. Odtwarza film instruktażowy.
+    /// </summary>
     public class Projector : MonoBehaviour
     {
         [SerializeField] GameObject projectorLight;

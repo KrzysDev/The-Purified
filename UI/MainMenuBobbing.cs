@@ -3,16 +3,19 @@ using UnityEngine;
 
 namespace ThePurified.UI
 {
+    /// <summary>
+    /// klasa tworzaca efekt head bob w menu glownym gry.
+    /// </summary>
     [RequireComponent(typeof(Camera))]
     public class MainMenuBobbing : MonoBehaviour
     {
         [Header("View Bobbing Settings")]
         [Range(0, 10f)]
-            [SerializeField] float bobbingSpeed;
+        [SerializeField] float bobbingSpeed;
         [Range(0, 1f)]
-            [SerializeField] float bobbingAmount;
+        [SerializeField] float bobbingAmount;
         [Range(0, 1f)]
-            [SerializeField] float sideBobbingAmount; 
+        [SerializeField] float sideBobbingAmount; 
         Vector3 newPos;
         Vector3 startingPos;
         private float timer;

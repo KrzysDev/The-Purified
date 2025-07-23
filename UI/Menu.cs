@@ -9,6 +9,9 @@ using ThePurified.AudioSystem;
 
 namespace ThePurified.UI
 {
+    /// <summary>
+    /// klasa obslugujaca main menu gry. Funkcje sa przypisane do przyciskow w silniku. 
+    /// </summary>
     public class Menu : MonoBehaviour
     {
         [Header("Menu")]
@@ -46,7 +49,7 @@ namespace ThePurified.UI
             animator.SetBool("transition", true);
 
             yield return new WaitForSeconds(info.length);
-            
+
             SceneManager.LoadScene(sceneIndex);
         }
 

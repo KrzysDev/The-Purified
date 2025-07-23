@@ -14,10 +14,10 @@ namespace ThePurified.PlayerSystem
     }
     public class InspectController : MonoBehaviour
     {
-        [Header("InspectPoint")]
-        [Tooltip("point in front of camera where player will rotate object using mouse")]
+        [Header("Inspect Point")]
+        [Tooltip("punkt przed kamera ktory gracz bedzie rotowal uzywajac myszy")]
         public Transform inspectPoint;
-        [Header("Rotation Speed")]
+        [Header("predkosc rotacji")]
         [SerializeField] float rotationSpeed = 2f;
 
         public static KeyCode leaveInspection = KeyCode.Tab;
@@ -36,14 +36,11 @@ namespace ThePurified.PlayerSystem
         [Header("Cinemachine Input Axis Controller")]
         [SerializeField] CinemachineInputAxisController controller;
 
-        [Header("Global volume for depth of field")]
-        [Tooltip("Inspection controller uses depth of field to make blurry effect behind inspected object")]
-        [SerializeField] Volume volume;
         [SerializeField] private float depthNormalValue;
         [SerializeField] private float depthInspectedValue;
 
-        [Header("Interpolation Time")]
-        [Tooltip("How fast inspected object moves to inspect point")]
+        [Header("Czas interpolacji")]
+        [Tooltip("jak szybko obiekt interpoluje swoja pozycje do inspect point")]
         [SerializeField] float interpolationSpeed = 2f;
 
 
@@ -52,7 +49,11 @@ namespace ThePurified.PlayerSystem
             if (instance == null)
                 instance = this;
         }
-
+        /// <summary>
+        /// ustawia GameObject do inspekcji
+        /// </summary>
+        /// <param name="item"> gameobject ktory ma byc ustawiony do inspekcji </param>
+        /// <param name="destroyObject"> jesli prawda, zniszczy obiekt po wyjsciu z inspekcji </param>
         public void SetItemToInspect(GameObject item, bool destroyObject = false)
         {
             controller.enabled = false;
@@ -67,12 +68,19 @@ namespace ThePurified.PlayerSystem
 
             inspectedObjectParent = item.transform.parent;
 
-            StartCoroutine(InterpolateToInspectPoint(item, inspectPoint.position, inspectPoint));
+            StartCoroutine(InterpolateToPoint(item, inspectPoint.position, inspectPoint));
 
             StartCoroutine(ObjectInspecting(destroyObject));
         }
-
-        private IEnumerator InterpolateToInspectPoint(GameObject item, Vector3 point, Transform parent)
+        
+        /// <summary>
+        /// interpoluje pozyycje gameobjectu do punktu
+        /// </summary>
+        /// <param name="item"> gameobject ktorego pozycja jest interpolowana </param>
+        /// <param name="point"> punkt do ktorego pozycja jest interpolowana </param>
+        /// <param name="parent"> rodzic gameobjectu po interpolacji </param>
+        /// <returns></returns>
+        private IEnumerator InterpolateToPoint(GameObject item, Vector3 point, Transform parent)
         {
             item.transform.SetParent(parent, true);
 
@@ -96,6 +104,11 @@ namespace ThePurified.PlayerSystem
 
         }
 
+        /// <summary>
+        /// przechowuje logike inspekcji przedmiotu
+        /// </summary>
+        /// <param name="destroyObject">jesli prawda, niszczy obiekt po zakonczeniu inspekcji</param>
+        /// <returns></returns>
         private IEnumerator ObjectInspecting(bool destroyObject = false)
         {
 
@@ -129,13 +142,13 @@ namespace ThePurified.PlayerSystem
                     previousMousePos = Input.mousePosition;
                 }
 
-                if(inspection != null)
+                if (inspection != null)
                     inspection.WhileInspection();
 
                 yield return null;
             }
 
-            if(inspection!=null)
+            if (inspection != null)
                 inspection.OnInspectionEnd();
 
 
@@ -148,7 +161,7 @@ namespace ThePurified.PlayerSystem
             else
             {
                 inspectPoint.GetChild(0).gameObject.transform.rotation = inspectedObjectOriginalRotation;
-                StartCoroutine(InterpolateToInspectPoint(inspectPoint.GetChild(0).gameObject, inspectedObjectOriginalPos, inspectedObjectParent));
+                StartCoroutine(InterpolateToPoint(inspectPoint.GetChild(0).gameObject, inspectedObjectOriginalPos, inspectedObjectParent));
             }
 
             PlayerMovement.movementEnabled = true;
@@ -157,14 +170,6 @@ namespace ThePurified.PlayerSystem
             Cursor.visible = false;
 
             isInspecting = false;
-        }
-
-        private void SetDepthOfField(float value)
-        {
-            if (volume.profile.TryGet<DepthOfField>(out DepthOfField d))
-            {
-                d.gaussianEnd.value = value;
-            }
         }
     }
 }

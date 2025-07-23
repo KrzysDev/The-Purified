@@ -3,6 +3,9 @@ using ThePurified.AudioSystem;
 using System.Collections;
 using ThePurified.Items;
 
+/// <summary>
+/// Odtwarza dzwieki krokow gdy gracz chodzi.
+/// </summary>
 public class PlayerFootsteps : MonoBehaviour
 {
     private Vector3 lastPos;

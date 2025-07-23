@@ -3,6 +3,10 @@ using ThePurified.PlayerSystem;
 
 namespace ThePurified.Items
 {
+    /// <summary>
+    /// klasa uzywana przez itemy z ktorymi mozna wejsc w interkacje po inspekcji innego itemu.
+    /// Np gracz wchodzi w interakcje z nosem klauna na poczatku gry -> inspeckja + obrot nosa -> klika na klucz myszka -> interakcja 
+    /// </summary>
     public class InspectionItem : MonoBehaviour
     {
         private Camera mainCamera;
@@ -16,8 +20,17 @@ namespace ThePurified.Items
             }
         }
 
+        /// <summary>
+        /// Gdy gracz najedzie myszka
+        /// </summary>
         public virtual void OnHover() { }
+        /// <summary>
+        /// gdy gracz nacisnie myszke na obiekcie
+        /// </summary>
         public virtual void OnPressed() { }
+        /// <summary>
+        /// gdy gracz przestanie najezdzac myszka
+        /// </summary>
         public virtual void OnEndHover() { }
 
         void OnMouseEnter()

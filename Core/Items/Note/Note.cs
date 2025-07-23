@@ -1,8 +1,10 @@
 using ThePurified.Items;
 using ThePurified.PlayerSystem;
-using UnityEngine;
 
-public class Note : GameItem 
+/// <summary>
+/// notatka ktora gracz moze podniesc i zrobic jej inspekcje.
+/// </summary>
+public class Note : GameItem
 {
     public override void OnItemInteract()
     {

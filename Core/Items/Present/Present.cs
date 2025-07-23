@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace ThePurified.Items
 {
+    /// <summary>
+    /// Klasa uzywana przez prezent ktory mozna otworzyc gdy wpisze sie poprawny kod do komputera.
+    /// </summary>
     public class Present : GameItem
     {
         private Rigidbody rb;

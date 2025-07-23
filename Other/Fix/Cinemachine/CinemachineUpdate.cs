@@ -1,5 +1,8 @@
 using Unity.Cinemachine;
 using UnityEngine;
+/// <summary>
+/// klasa manualnie aktualizujaca cinemachine. (LateUpdate oraz FixedUpdate powodowaly bledy i lagi kamery)
+/// </summary>
 public class CinemachineUpdate : MonoBehaviour
 {
     private CinemachineBrain brain;

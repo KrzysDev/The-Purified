@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace ThePurified.PlayerSystem 
 {
+    /// <summary>
+    /// Klasa implementujaca poruszanie sie pierwszoosobowe gracza.
+    /// </summary>
     [RequireComponent(typeof(CharacterController))]
     public class PlayerMovement : MonoBehaviour
     {

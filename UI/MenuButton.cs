@@ -4,6 +4,9 @@ using UnityEngine.EventSystems;
 
 namespace ThePurified.UI
 {
+    /// <summary>
+    /// klasa obslugujaca logike 'wysuwania sie' przyciskow po najechaniu na nie myszka.
+    /// </summary>
     public class MenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         private Vector3 defaultPos;
@@ -15,7 +18,7 @@ namespace ThePurified.UI
         private float elapsed = 0f;
 
         private Vector3 start;
-        
+
 
         Coroutine currentCouroutine;
 
@@ -46,7 +49,7 @@ namespace ThePurified.UI
             start = transform.localPosition;
             while (elapsed < animationTime)
             {
-                transform.localPosition = Vector3.Lerp(start, pos, elapsed/animationTime);
+                transform.localPosition = Vector3.Lerp(start, pos, elapsed / animationTime);
                 elapsed += Time.deltaTime;
                 yield return null;
             }

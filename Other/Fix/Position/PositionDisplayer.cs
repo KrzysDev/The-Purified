@@ -1,6 +1,8 @@
 using System.ComponentModel;
 using UnityEngine;
 
+//Gdy obiekt jest dzieckiem wyswietla sie pozycja lokalna, a ja potrzebowalem pozycjli globalnej bez wyswietlania tej lokalnej. Nie jest to skrypt uzywany w grze juz.
+
 [ExecuteInEditMode]
 public class PositionDisplayer : MonoBehaviour
 {
@@ -12,8 +14,8 @@ public class PositionDisplayer : MonoBehaviour
 
     void Update()
     {
-        transform.position = global;
-        transform.localPosition = local;   
+        global = transform.position;
+        local = transform.localPosition;   
     }
 
 }

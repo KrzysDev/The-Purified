@@ -5,6 +5,9 @@ using UnityEngine.Video;
 
 namespace ThePurified.UI
 {
+    /// <summary>
+    /// klasa ktora odtwarza cutscenke nagrana jako plik video. Mozliwe ze skrypt ten nie bedzie potrzebny pozniej i zrobie cutscenke jako animacja w silniku.
+    /// </summary>
     public class CutsceneController : MonoBehaviour
     {
         [SerializeField] VideoPlayer player;

@@ -13,6 +13,9 @@ namespace ThePurified.PlayerSystem
         void OnHover();
         void OnHoverExit();
     }
+    /// <summary>
+    /// obsluguje system interakcji. Definiuje kiedy gracz moze wchodzic w interakcje z przedmiotami.
+    /// </summary>
     public class InteractionController : MonoBehaviour
     {
         [Header("Interaction Settings")]
@@ -22,7 +25,7 @@ namespace ThePurified.PlayerSystem
 
         public static KeyCode interactionKey = KeyCode.E;
 
-        private IInteraction currentInteraction = null, previousInteraction = null;
+        private IInteraction currentInteraction = null;
         private IInteractionHover previousHover = null, currentHover = null;
 
 
@@ -32,7 +35,7 @@ namespace ThePurified.PlayerSystem
         }
 
         ///<summary>
-        //Handles interaction detecting and activating
+        ///Zajmuje sie detekcja interakcji i jej wywolywaniem.
         ///</summary> 
         void HandleInteraction()
         {
@@ -63,20 +66,12 @@ namespace ThePurified.PlayerSystem
 
             }
 
-            //When player stops hovering over object
             if (previousHover != currentHover && previousHover != null)
             {
                 previousHover.OnHoverExit();
             }
 
-           /* if (currentInteraction != previousInteraction && previousInteraction != null)
-            {
-                previousInteraction.OnInteractEnd();
-            } */
-
             previousHover = currentHover;
-
-            previousInteraction = currentInteraction;
         }
     }
 }

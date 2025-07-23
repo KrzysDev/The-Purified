@@ -36,7 +36,7 @@ namespace ThePurified.PlayerSystem
         }
 
         ///<summary>
-        //makes headbobbing effect on a gameobject that cinemachine camera is following. Headbob changes dynamically depending on what player is doing. 
+        ///Tworzy efekt head bob na obiekcie ktory sledzi cinemachine camera. Zmienia sie dynamiczne w zaleznosci od tego co gracz robi. 
         ///</summary>
         private void HandleHeadBob()
         {
