@@ -3,6 +3,9 @@ using UnityEngine;
 using ThePurified.AudioSystem;
 namespace ThePurified.Flashlight
 {
+    /// <summary>
+    /// obsluguje logike latarki
+    /// </summary>
     public class FlashlightController : MonoBehaviour
     {
         public static KeyCode flashlightKey = KeyCode.F;
@@ -21,6 +24,9 @@ namespace ThePurified.Flashlight
             HandleFlashlight();
         }
 
+        /// <summary>
+        /// obsluguje input latarki
+        /// </summary>
         void HandleFlashlight()
         {
             if (Input.GetKeyDown(flashlightKey))
@@ -28,8 +34,8 @@ namespace ThePurified.Flashlight
                 flashligthLight.SetActive(!flashligthLight.activeSelf);
 
                 AudioManager.instance.PlaySound("Flashlight");
-                
-                //animacja na poczatku gry 
+
+                //animacja przy pierwszym uruchomieniu latarki
                 if (!wasActiveBefore)
                 {
                     wasActiveBefore = true;
@@ -40,6 +46,9 @@ namespace ThePurified.Flashlight
             }
         }
 
+        /// <summary>
+        /// korutyna czekajaca az animacja uruchamiajaca sie przy pierwszym wlaczaniu latarki sie skonczy i wylaczajaca animator.
+        /// </summary>
         private IEnumerator FirstInteraction()
         {
             AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);

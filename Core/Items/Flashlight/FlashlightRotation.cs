@@ -1,7 +1,10 @@
 using UnityEngine;
 
 namespace ThePurified.Flashlight
-{
+{   
+    /// <summary>
+    /// obraca latarke za kamera z opoznieniem.
+    /// </summary>
     public class FlashlightRotation : MonoBehaviour
     {
         [SerializeField] Transform cinemachineCamera;
