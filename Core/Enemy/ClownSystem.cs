@@ -6,13 +6,17 @@ using System.Collections.Generic;
 using ThePurified.Ai;
 
 namespace ThePurified.AI
-{
+{   
+    /// <summary>
+    /// klasa obslugujaca logike AI Robo-Clown'a.
+    /// </summary>
     [RequireComponent(typeof(ClownRiddle))]
     public class ClownSystem : MonoBehaviour
     {
         [Header("NavMesh Agent")]
         [SerializeField] NavMeshAgent clownAgent;
         [Header("Player: ")]
+        [Tooltip("PlayerBody za ktorym AI podaza")]
         [SerializeField] Transform target;
 
         public static bool activated = true;
@@ -22,14 +26,17 @@ namespace ThePurified.AI
         Coroutine currentCoroutine;
 
 
-        [Header("Deactivation time")]
+        [Header("Czas deaktywacji")]
+        [Tooltip("najkrotszy czas przez jaki clown moze byc wylaczony")]
         [SerializeField] float minTime = 20f;
+        [Tooltip("najdluzszy czas przez jaki clown moze byc wylaczony")]
         [SerializeField] float maxTime = 40f;
 
 
+        [Tooltip("wszystkie generatory na mapie")]
         [SerializeField] List<Generator> generators = new List<Generator>();
 
-        private ClownRiddle ridlde;
+        private ClownRiddle ridlde; //zagadka na clownie
 
         void Start()
         {
@@ -60,6 +67,10 @@ namespace ThePurified.AI
             }
         }
 
+        /// <summary>
+        /// Sprawdza czy wszystkie generatory sa wylaczone
+        /// </summary>
+        /// <returns> prawda jesli wszystkie generatory sa wylaczone </returns>
         bool AllGeneratorsAreOff()
         {
             for (int i = 0; i < generators.Count; i++)
@@ -75,11 +86,18 @@ namespace ThePurified.AI
             return true;
         }
 
+        /// <summary>
+        /// ustawia cel podazania AI
+        /// </summary>
+        /// <param name="position"> pozycja za ktora AI podaza </param>
         private void SetDestination(Transform position)
         {
             clownAgent.SetDestination(position.position);
         }
 
+        /// <summary>
+        /// korutyna aktywujaca clowna. 
+        /// </summary>
         private IEnumerator ActivateClown()
         {
             yield return new WaitForSeconds(2f); //TODO: tutaj jakas animacja wstawania budzenia sie czy cos takiego.
@@ -95,7 +113,9 @@ namespace ThePurified.AI
                 yield return new WaitForSeconds(0.1f);
             }
         }
-
+        ///<summary>
+        ///korutyna usypiajaca clowna
+        ///</summary>
         public IEnumerator Deactivate(float seconds)
         {
             //Debug.Log($"Clown deaktywowany na {seconds}");
@@ -112,6 +132,9 @@ namespace ThePurified.AI
             currentCoroutine = StartCoroutine(ActivateClown());
         }
 
+        /// <summary>
+        /// aktywuje wszystkie generatory spowrotem
+        /// </summary>
         private void ActivateAllGenerators()
         {
             Generator.allGeneratorsAreOff = false;
@@ -126,7 +149,7 @@ namespace ThePurified.AI
             if (collision.gameObject.CompareTag("Player"))
             {
                 StopCoroutine(currentCoroutine);
-                Debug.Log("zlapal gracza!");
+                //Debug.Log("zlapal gracza!");
             }
         }
     }

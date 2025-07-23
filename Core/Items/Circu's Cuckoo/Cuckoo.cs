@@ -3,6 +3,9 @@ using ThePurified.AudioSystem;
 
 namespace ThePurified.Items
 {
+    /// <summary>
+    /// klasa uzywana przez 'kukułkę' w kształcie cyrku z wyskakującą na sprężynie maską clowna. Prosty jumpscare.
+    /// </summary>
     public class Cuckoo : MonoBehaviour
     {
         [SerializeField] Animator animator;

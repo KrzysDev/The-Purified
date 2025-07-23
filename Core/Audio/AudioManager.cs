@@ -5,6 +5,9 @@ using UnityEngine;
 namespace ThePurified.AudioSystem
 {
     [System.Serializable]
+    ///<summary>
+    //Klasa przechowujaca wszystkie wlasciwosci dzwieku w grze.
+    ///</summary>
     public class Sound
     {
         public AudioClip clip;
@@ -17,27 +20,30 @@ namespace ThePurified.AudioSystem
         public float maxDistance, minDistance;
 
     }
+
     public class AudioManager : MonoBehaviour
     {
         [Header("Sounds: ")]
+        [Tooltip("List of sounds in the game")]
         [SerializeField] List<Sound> sounds;
 
         public static AudioManager instance;
 
-        private int previousIndex = 0;
-
         public void Awake()
         {
-            instance = this;
+            instance = this; //gra jest skonstruowana w ten sposob, ze audiomanager w sumie nie potrzebowal miec singletonu.
         }
 
 
+        ///<summary>
+        //puszcza dzwiek o nazwie {name}. Dzwiek puszczony ta funkcja nie jest przestrzenny.
+        ///</summary>
         public void PlaySound(string name)
         {
             if (instance == null)
             {
                 Debug.LogWarning("there is no AudioManager in this scene");
-                return;  
+                return;
             }
 
             Sound s = sounds.Find(s => s.name == name);
@@ -66,13 +72,15 @@ namespace ThePurified.AudioSystem
                 Destroy(soundObject, s.clip.length);
 
         }
-
+        ///<summary>
+        //Odtwarza dzwiek o nazwie {name} w pozycji {position}
+        ///</summary>
         public void PlaySoundInPosition(string name, Vector3 position)
         {
             if (instance == null)
             {
                 Debug.LogWarning("there is no AudioManager in this scene");
-                return;  
+                return;
             }
 
             Sound s = sounds.Find(s => s.name == name);
@@ -108,12 +116,15 @@ namespace ThePurified.AudioSystem
                 Destroy(soundObject, audio.clip.length);
         }
 
+        ///<summary>
+        //Puszcza losowy dzwiek z tagiem {tag}.
+        ///</summary>
         public void PlayRandomWithTag(string tag)
         {
             if (instance == null)
             {
                 Debug.LogWarning("there is no AudioManager in this scene");
-                return;  
+                return;
             }
 
             var matching = sounds.Where(s => s.tag == tag).ToList();
@@ -129,12 +140,15 @@ namespace ThePurified.AudioSystem
             PlaySound(matching[randomIndex].name);
         }
 
+        ///<summary>
+        //Puszcza losowy dzwiek z tagiem {tag} na pozycji {pos}
+        ///</summary>
         public void PlayRandomWithTag(string tag, Vector3 pos)
         {
             if (instance == null)
             {
                 Debug.LogWarning("there is no AudioManager in this scene");
-                return;  
+                return;
             }
 
             var matching = sounds.Where(s => s.tag == tag).ToList();
@@ -146,6 +160,7 @@ namespace ThePurified.AudioSystem
             }
 
             int randomIndex;
+            int previousIndex = 0;
 
             do
             {
@@ -153,15 +168,20 @@ namespace ThePurified.AudioSystem
             }
             while (randomIndex == previousIndex);
 
+            previousIndex = randomIndex;
+
             PlaySoundInPosition(matching[randomIndex].name, pos);
         }
 
+        ///<summary>
+        //Puszcza losowy dzwiek z tagiem {tag} na pozycji {pos} z losową wysokością.
+        ///</summary>
         public void PlayRandomWithTag(string tag, Vector3 pos, float minPitch, float maxPitch)
         {
             if (instance == null)
             {
                 Debug.LogWarning("there is no AudioManager in this scene");
-                return;  
+                return;
             }
 
             var matching = sounds.Where(s => s.tag == tag).ToList();
@@ -173,6 +193,7 @@ namespace ThePurified.AudioSystem
             }
 
             int randomIndex;
+            int previousIndex = 0;
 
             do
             {

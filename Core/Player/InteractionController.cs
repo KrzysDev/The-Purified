@@ -31,9 +31,9 @@ namespace ThePurified.PlayerSystem
             HandleInteraction();
         }
 
-        //<summary>
+        ///<summary>
         //Handles interaction detecting and activating
-        //</summary> 
+        ///</summary> 
         void HandleInteraction()
         {
             currentHover = null;

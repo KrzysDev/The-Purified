@@ -35,9 +35,9 @@ namespace ThePurified.PlayerSystem
                 HandleHeadBob();
         }
 
-        //<summary>
+        ///<summary>
         //makes headbobbing effect on a gameobject that cinemachine camera is following. Headbob changes dynamically depending on what player is doing. 
-        //</summary>
+        ///</summary>
         private void HandleHeadBob()
         {
             if ((Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0) && transform.position != lastPos)

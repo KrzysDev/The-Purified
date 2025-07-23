@@ -7,37 +7,43 @@ using UnityEngine.UI;
 
 namespace ThePurified.Items
 {
+    /// <summary>
+    /// klasa obslugujaca logike komputera, do ktorego gracz wpisuje kod aby uzyskac karte dostepu.
+    /// </summary>
     public class ComputerSystem : GameItem
     {
         [Header("Player: ")]
+        [Tooltip("playerBody: ")]
         [SerializeField] Transform playerHead;
-
-        [Tooltip("player arm")]
-        [SerializeField] GameObject playerArm;
 
         private Vector3 originalHeadPos;
 
-        [Header("Computer Settings: ")]
+        [Header("Ustawienia komputera: ")]
 
+        [Tooltip("pozycja do ktorej kamera bedzie sie przyblizac przy interakcji z komputerem")]
         [SerializeField] Transform zoomPosition;
 
+        [Tooltip("jak szybko bedzie sie przyblizac kamera do pozycji przyblizenia")]
         [SerializeField] private float zoomSpeed = 2f;
 
+        [Tooltip("pole tekstowe wyswietlane na komputerze")]
         [SerializeField] TMP_InputField inputField;
 
         private Coroutine currentZoom;
 
-        public static KeyCode leaveZoom = KeyCode.Tab;
+        public static KeyCode leaveZoom = KeyCode.Tab; //przycisk ktorym wychodzi sie z interakcji z komputerem.
 
         private bool interacting = false;
 
-        [Header("Zoom animation curve: ")]
+        [Header("Krzywa animacji Zoom: ")]
+        [Tooltip("krzywa animacji przyblizania do komputera")]
         [SerializeField] AnimationCurve curve;
 
-        [Header("Correct password: ")]
+        [Header("Poprawne haslo: ")]
         [SerializeField] string password = "1234";
 
-        [Header("Events: ")]
+        [Header("Gdy haslo prawidlowe: ")]
+        [Tooltip("wydarzenie ktore sie wywola gdy haslo w komputerze jest prawidlowe")]
         [SerializeField] UnityEvent onPasswordCorrect;
 
         public override void OnItemInteract()
@@ -58,7 +64,6 @@ namespace ThePurified.Items
 
                 currentZoom = StartCoroutine(Lerp(zoomPosition.position));
 
-                playerArm.SetActive(false);
                 PlayerMovement.movementEnabled = false;
 
                 inputField.Select();
@@ -89,7 +94,10 @@ namespace ThePurified.Items
 
         }
 
-
+        /// <summary>
+        /// zmienia pozycje {playerHead} (obiektu sledzonego przez cinemachine) interpolujac miedzy pozycjami uzywajac krzywej animacji.
+        /// </summary>
+        /// <param name="pos">pozycja do ktorej glowa gracza jest przenoszona</param>
         private IEnumerator Lerp(Vector3 pos)
         {
             float duration = 1f / zoomSpeed;
@@ -116,10 +124,11 @@ namespace ThePurified.Items
             PlayerMovement.movementEnabled = !interacting;
             PlayerHeadBob.headBobEnabled = !interacting;
 
-            playerArm.SetActive(!interacting);
         }
 
-
+        /// <summary>
+        /// sprawdza czy wpisane haslo jest poprawne
+        /// </summary>
         public void CheckPassword()
         {
             if (inputField.text == password)

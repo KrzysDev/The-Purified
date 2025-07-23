@@ -15,7 +15,6 @@ namespace ThePurified.Items
 
         public void OnInteract()
         {
-            //Debug.Log($"{gameObject.name} OnItemInteract!");
             OnItemInteract();
         }
 

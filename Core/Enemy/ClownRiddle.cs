@@ -8,31 +8,44 @@ using ThePurified.AI;
 
 namespace ThePurified.Ai
 {
+    ///<summary>
+    ///klasa przechowujaca logike obslugiwania zagadki znajdującej sie na clown'ie
+    ///</summary>
     public class ClownRiddle : GameItem
     {
+        [Tooltip("glowa gracza (obiekt ktory sledzi cinemachineCamera)")]
         [SerializeField] Transform playerHead;
 
         private Vector3 defaultPos;
 
+        [Tooltip("Pozycja gdzie glowa bedzie się znajdywać gdy przybliży się ona do zagadki.")]
         [SerializeField] Transform zoomPos;
 
+        [Tooltip("czas trwania przyblizania glowy")]
         [SerializeField] private float zoomTime = 1f;
 
+        [Tooltip("krzywa animacji przyblizania")]
         [SerializeField] AnimationCurve zoomCurve;
+        [Tooltip("krzywa animacji przesuwania kratki pokazujacej jakie pole zagadki gracz wybral")]
         [SerializeField] AnimationCurve boxCurve;
         public bool inInteraction = false;
 
         private Coroutine currentCoroutine;
 
-        [Header("Controlling Riddle")]
+        [Header("Kontrolowanie zagadki")]
+        [Tooltip("punkty po ktorych przesuwa sie kratka pokazujacej jakie pole zagadki gracz wybral. Powinny byc to srodki wglebien na kostki w zagadce na clownie. Kratka bedzie tych pozycji uzywac do interpolacji swojej pozycji")]
         [SerializeField] Transform[] movingPoints;
-        private bool[] slots;
-        [Header("Cube Parts (place in password order)")]
-        [Tooltip("place them on the list so they create password. f.e if password is green, blue, red, yellow place cubes in such order. ")]
+        private bool[] slots; //tablica przechowujaca informacje o tym ktore pola sa wolne a ktore nie.
+
+        [Header("Cube Parts - czesci zagadki")]
+        [Tooltip("Kostki ktore wyswietlaja sie gdy gracz w trakcie zagadki naciska strzalke w dol oraz strzalke w gore. Umiesc je na tej liscie tak, zeby tworzyly haslo. Np: jesli haslo to czerwone, zielone, zolte, niebieskie to lista powinna od gory wygladac tak: czerwone, zielone, zolte, niebieskie.")]
         [SerializeField] GameObject[] cubeParts;
+        [Tooltip("srodek kratki pokazujacej jakie pole gracz wybral")]
         [SerializeField] Transform centre;
+        [Tooltip("kratka pokazujaca jakie pole zagadki gracz wybral")]
         [SerializeField] Transform box;
 
+        [Tooltip("jak szybko kratka pokazujaca jakie pole gracz wybral porusza sie miedzy polami?")]
         [SerializeField] float boxSpeed;
 
         private bool movingBox = false;
@@ -42,6 +55,7 @@ namespace ThePurified.Ai
         int currentCubePartIndex = 0;
 
         [Header("On Correct Password")]
+        [Tooltip("Event ktory wywoluje sie gdy poprawne haslo zostalo ulozone przez gracza")]
         [SerializeField] UnityEvent onCorrectPasswordEvent;
 
         public override void ItemStart()
@@ -59,20 +73,13 @@ namespace ThePurified.Ai
         {
             if (!inInteraction && !ClownSystem.activated)
             {
-                PlayerMovement.movementEnabled = false;
-                PlayerHeadBob.headBobEnabled = false;
-
-                defaultPos = playerHead.position;
-                inInteraction = true;
-                if (currentCoroutine != null) StopCoroutine(currentCoroutine);
-
-                currentCoroutine = StartCoroutine(Zoom(zoomPos.position));
+                StartCoroutine(ZoomIn());
             }
-            else
+           /* else
             {
                 if (inInteraction) Debug.Log("jest juz w interakcji!");
                 if (ClownSystem.activated) Debug.Log("system clowna jest aktywowany");
-            }
+            } */
         }
 
         public override void ItemUpdate()
@@ -90,21 +97,41 @@ namespace ThePurified.Ai
 
             if (CorrectPassword())
             {
-                Debug.Log("haslo poprawne!");
+                //Debug.Log("haslo poprawne!");
                 StartCoroutine(Zoom(defaultPos));
                 onCorrectPasswordEvent.Invoke();
                 enabled = false; //wylacz ten skrypt skoro haslo poprawne
             }
         }
 
-        public IEnumerator ZoomOut() //funkcja uzywana ze skryptu clown system - dlatego tutaj jest
+        ///<summary>
+        ///Sluzy do oddalnia kamery od pozycji przyblizenia do pozycji przed przyblizeniem.
+        ///</summary>
+        public IEnumerator ZoomOut()
         {
             if (currentCoroutine != null) StopCoroutine(currentCoroutine);
 
             yield return currentCoroutine = StartCoroutine(Zoom(defaultPos));
         }
 
+        ///<summary>
+        ///Sluzy do przyblizenia kamery od pozycji aktualnej do pozycji przyblizonej
+        ///</summary>
+        private IEnumerator ZoomIn()
+        {
+            PlayerMovement.movementEnabled = false;
+            PlayerHeadBob.headBobEnabled = false;
 
+            defaultPos = playerHead.position;
+            inInteraction = true;
+            if (currentCoroutine != null) StopCoroutine(currentCoroutine);
+
+            yield return currentCoroutine = StartCoroutine(Zoom(zoomPos.position));
+        }
+
+        ///<summary>
+        ///Sluzy do przyblizania {playerHead} (obiektu sledzonego przez cinemachine) do pozycji {pos}
+        ///</summary>
         private IEnumerator Zoom(Vector3 pos)
         {
 
@@ -135,6 +162,10 @@ namespace ThePurified.Ai
         #endregion
 
         #region riddle 
+
+        ///<summary>
+        ///Obsluguje poruszanie sie kwadratu / kratki w trakcie rozwiazywania zagadki za pomoca strzalek.
+        ///</summary>
         private void HandleBoxMoving()
         {
             if (inInteraction)
@@ -169,6 +200,9 @@ namespace ThePurified.Ai
             }
         }
 
+        /// <summary>
+        /// Obsluguje umieszczanie sześciennych czesci w zagadce.
+        /// </summary>
         private void HandleCubePartPlacing()
         {
             if (!movingBox && inInteraction)
@@ -228,7 +262,11 @@ namespace ThePurified.Ai
                 cubeParts[currentCubePartIndex].SetActive(false);
             }
         }
-
+        /// <summary>
+        /// porusza kwadracikiem po zagadce. Kwadracik pokazuje aktualnie wybrane pole.
+        /// </summary>
+        /// <param name="pos"> pozycja do ktorej ma ruszyć się kwadracik </param>
+        /// <returns></returns>
         private IEnumerator MoveBox(Vector3 pos)
         {
             movingBox = true;
@@ -252,7 +290,10 @@ namespace ThePurified.Ai
             //Debug.Log("koniec przesuwania");
         }
 
-
+        /// <summary>
+        /// sprawdza czy aktualnie ulozone haslo jest poprawne
+        /// </summary>
+        /// <returns>to czy haslo jest poprawnie wlozone do robota </returns>
         private bool CorrectPassword()
         {
             for (int i = 0; i < movingPoints.Length; i++)
@@ -270,7 +311,7 @@ namespace ThePurified.Ai
                     Debug.Log(movingPoints[i].GetChild(0).gameObject.name + " !=" + cubeParts[i].gameObject.name);
                     return false;
                 }
-                    
+
             }
 
             return true;
