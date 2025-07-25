@@ -72,6 +72,7 @@ namespace ThePurified.AudioSystem
                 Destroy(soundObject, s.clip.length);
 
         }
+
         ///<summary>
         //Odtwarza dzwiek o nazwie {name} w pozycji {position}
         ///</summary>
@@ -116,6 +117,57 @@ namespace ThePurified.AudioSystem
                 Destroy(soundObject, audio.clip.length);
         }
 
+        /// <summary>
+        /// Odtwarza dzwiek o nazwie {nazwa} na pozycji {position}
+        /// </summary>
+        /// <param name="name">nazwa dzwieku</param>
+        /// <param name="position">pozycja dzwieku</param>
+        /// <returns>AudioSource z tym dzwiekiem</returns>
+        public AudioSource GetAndPlaySoundInPosition(string name, Vector3 position)
+        {
+            if (instance == null)
+            {
+                Debug.LogWarning("there is no AudioManager in this scene");
+                return null;
+            }
+
+            Sound s = sounds.Find(s => s.name == name);
+
+            if (s == null)
+            {
+                Debug.LogError($"There is no sound called {name}");
+                return null;
+            }
+
+            GameObject soundObject = new GameObject($"SFX_{name}");
+
+            AudioSource audio = soundObject.AddComponent<AudioSource>();
+
+            audio.clip = s.clip;
+
+            audio.volume = s.volume;
+
+            audio.pitch = s.pitch;
+
+            audio.loop = s.loop;
+
+            if (!audio.loop)
+            {
+                Debug.LogError("Cannot get AudioSource that is not looped for safety reasons.");
+            }
+
+            audio.spatialBlend = 1;
+
+            audio.maxDistance = s.maxDistance;
+            audio.minDistance = s.minDistance;
+
+            soundObject.transform.position = position;
+
+            audio.Play();
+
+            return audio;
+            
+        }
         ///<summary>
         //Puszcza losowy dzwiek z tagiem {tag}.
         ///</summary>

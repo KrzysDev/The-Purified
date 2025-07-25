@@ -18,19 +18,23 @@ namespace ThePurified.PlayerSystem
         public static CinemachineCamera cinemachineCamera; //uzywane z innych skryptow aby wylaczac kamere gdy gracz nie powinien nia ruszac
 
         [Space(3)]
-        [Header("Walk Speed")]
-        [Tooltip("How fast player walks")]
+        [Header("szybkosc chodzenia")]
+        [Tooltip("jak szybko gracz chodzi")]
         [SerializeField] float walkSpeed;
         [Space(1)]
-        [Header("Run Speed")]
-        [Tooltip("How fast player runs")]
+        [Header("szybkosc biegu")]
+        [Tooltip("jak szybko gracz biega")]
         [SerializeField] float runSpeed;
+
+        [Header("Sila grawitacji")]
+        [SerializeField] float gravityPower = 9.81f;
 
         public static bool movementEnabled = true;
 
         void Start()
         {
             controller = GetComponent<CharacterController>();
+            
             LockCursor();
 
             cinemachineCamera = playerCamera.GetComponent<CinemachineCamera>();
@@ -39,6 +43,7 @@ namespace ThePurified.PlayerSystem
         void Update()
         {
             HandleMovement();
+            HandleGravity();
         }
 
         private void HandleMovement()
@@ -61,6 +66,11 @@ namespace ThePurified.PlayerSystem
 
                 controller.Move(speed * direction * Time.deltaTime);
             }
+        }
+
+        private void HandleGravity()
+        {
+            controller.Move(Vector3.down * gravityPower);
         }
 
         private void LockCursor()

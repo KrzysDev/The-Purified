@@ -1,10 +1,42 @@
 using UnityEngine;
 using ThePurified.AudioSystem;
 
-public class Lamp : MonoBehaviour
+namespace ThePurified.Items
 {
-    void Start()
+    public class Lamp : MonoBehaviour
     {
-        AudioManager.instance.PlaySoundInPosition("Lamp", transform.position);
+        private AudioSource audioSource;
+        [SerializeField] Material onMaterial;
+        [SerializeField] Material offMaterial;
+
+        [SerializeField] GameObject lampsLight;
+
+        private Renderer rend;
+        void Start()
+        {
+            audioSource = AudioManager.instance.GetAndPlaySoundInPosition("Lamp", transform.position);
+
+            rend = GetComponent<MeshRenderer>();
+        }
+
+        public void TurnOn()
+        {
+            Debug.Log("wywołano turn on w Lamp");
+            audioSource.UnPause();
+            rend.material = onMaterial;
+            lampsLight.SetActive(true);
+        }
+
+        public void TurnOff()
+        {
+            //Debug.Log("wywołano turn off w Lamp");
+            audioSource.Pause();
+            //Debug.Log("zapałzowano audiosource");
+            rend.material = offMaterial;
+            //Debug.Log("zmieniono material");
+            lampsLight.SetActive(false);
+            //Debug.Log("wylaczono swiatlo");
+        }
     }
 }
+

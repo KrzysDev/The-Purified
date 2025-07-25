@@ -24,8 +24,7 @@ namespace ThePurified.PlayerSystem
         [SerializeField] private LayerMask layer;
 
         public static KeyCode interactionKey = KeyCode.E;
-
-        private IInteraction currentInteraction = null;
+        
         private IInteractionHover previousHover = null, currentHover = null;
 
 

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using ThePurified.Ai;
+using UnityEngine.Events;
 
 namespace ThePurified.AI
 {   
@@ -32,17 +33,30 @@ namespace ThePurified.AI
         [Tooltip("najdluzszy czas przez jaki clown moze byc wylaczony")]
         [SerializeField] float maxTime = 40f;
 
+        private bool isDeactivating = false;
+
 
         [Tooltip("wszystkie generatory na mapie")]
         [SerializeField] List<Generator> generators = new List<Generator>();
 
-        private ClownRiddle ridlde; //zagadka na clownie
+        private ClownRiddle riddle; //zagadka na clownie
+
+        [Header("Schowki z kostkami")]
+        [SerializeField] StorageCompartment[] compartments;
+
+        [Header("Gdy generatory sie wlacza: ")]
+        [SerializeField] UnityEvent onAllGeneratorsOn;
+        [Header("Gdy wszystkie generatory sie wlacza: ")]
+        [SerializeField] UnityEvent onAllGeneratorsOff;
+
 
         void Start()
         {
             instance = this;
 
-            ridlde = GetComponent<ClownRiddle>();
+            riddle = GetComponent<ClownRiddle>();
+
+            ActivateAI();
         }
 
         public void ActivateAI()
@@ -59,11 +73,11 @@ namespace ThePurified.AI
                 //Debug.Log("sprawdzilem");
             }
 
-            if (Generator.allGeneratorsAreOff && activated)
+            if (Generator.allGeneratorsAreOff && activated && !isDeactivating)
             {
                 //Debug.Log("dezaktywuje clown'a");
                 StartCoroutine(Deactivate(Random.Range(minTime, maxTime)));
-
+                SetStorageCompartments(true);
             }
         }
 
@@ -102,9 +116,9 @@ namespace ThePurified.AI
         {
             yield return new WaitForSeconds(2f); //TODO: tutaj jakas animacja wstawania budzenia sie czy cos takiego.
 
-            if (ridlde.inInteraction)
+            if (riddle.inInteraction)
             {
-                StartCoroutine(ridlde.ZoomOut());
+                StartCoroutine(riddle.ZoomOut());
             }
 
             while (activated)
@@ -118,18 +132,33 @@ namespace ThePurified.AI
         ///</summary>
         public IEnumerator Deactivate(float seconds)
         {
-            //Debug.Log($"Clown deaktywowany na {seconds}");
+            clownAgent.isStopped = true;
+            clownAgent.ResetPath();
+
+            isDeactivating = true;
+
+            Debug.Log($"Clown deaktywowany na {seconds}");
+
+            onAllGeneratorsOff.Invoke();
 
             activated = false;
+
             yield return new WaitForSeconds(seconds);
+
+            onAllGeneratorsOn.Invoke();
 
             activated = true;
 
             //Debug.Log("koniec deaktywacji powrot....");
+            clownAgent.isStopped = false;
+            clownAgent.ResetPath();
 
             ActivateAllGenerators();
+            SetStorageCompartments(false);
 
             currentCoroutine = StartCoroutine(ActivateClown());
+
+            isDeactivating = false;
         }
 
         /// <summary>
@@ -141,6 +170,28 @@ namespace ThePurified.AI
             for (int i = 0; i < generators.Count; i++)
             {
                 generators[i].TurnOn();
+            }
+        }
+
+        /// <summary>
+        /// otwiera lub zamyka schowki z cube'ami.
+        /// </summary>
+        /// <param name="value"></param>
+        private void SetStorageCompartments(bool value)
+        {
+            if (value)
+            {
+                foreach (StorageCompartment comp in compartments)
+                {
+                    comp.Open();
+                }
+            }
+            else
+            {
+                foreach (StorageCompartment comp in compartments)
+                {
+                    comp.Close();
+                }
             }
         }
 
