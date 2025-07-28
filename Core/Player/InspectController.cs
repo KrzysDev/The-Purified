@@ -43,12 +43,25 @@ namespace ThePurified.PlayerSystem
         [Tooltip("jak szybko obiekt interpoluje swoja pozycje do inspect point")]
         [SerializeField] float interpolationSpeed = 2f;
 
+        //przyblizanie obiektu
+        private float mouseWheelInput;
+        private Vector3 inspectPointOriginalPos;
+        [Header("Przyblizanie obiektu inspektowanego")]
+        [SerializeField] float minzoom = -2f;
+        [SerializeField] float  maxZoom = 2f;
+        [SerializeField] float zoomSpeed = 2f;
+
+        private float currentZoom = 0f;
 
         private void Start()
         {
             if (instance == null)
                 instance = this;
+
+            inspectPointOriginalPos = inspectPoint.localPosition;
         }
+
+
         /// <summary>
         /// ustawia GameObject do inspekcji
         /// </summary>
@@ -60,8 +73,7 @@ namespace ThePurified.PlayerSystem
             PlayerMovement.movementEnabled = false;
 
             Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-            
+
             inspectedObjectOriginalPos = item.transform.position;
 
             inspectedObjectOriginalRotation = item.transform.rotation;
@@ -72,7 +84,7 @@ namespace ThePurified.PlayerSystem
 
             StartCoroutine(ObjectInspecting(destroyObject));
         }
-        
+
         /// <summary>
         /// interpoluje pozyycje gameobjectu do punktu
         /// </summary>
@@ -145,6 +157,8 @@ namespace ThePurified.PlayerSystem
                 if (inspection != null)
                     inspection.WhileInspection();
 
+                HandleInspectPointZooming();
+
                 yield return null;
             }
 
@@ -167,10 +181,31 @@ namespace ThePurified.PlayerSystem
             PlayerMovement.movementEnabled = true;
 
             Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
+
+            ResetInspectPoint();
 
             isInspecting = false;
         }
+
+
+        private void HandleInspectPointZooming()
+        {
+            mouseWheelInput = Input.GetAxis("Mouse ScrollWheel");
+
+            if (Mathf.Abs(mouseWheelInput) > 0.01f)
+            {
+                currentZoom += mouseWheelInput * zoomSpeed;
+                currentZoom = Mathf.Clamp(currentZoom, minzoom, maxZoom);
+                inspectPoint.localPosition = inspectPointOriginalPos + Vector3.forward * currentZoom;
+            }
+                
+        }
+
+        private void ResetInspectPoint()
+        {
+            inspectPoint.localPosition = inspectPointOriginalPos;
+        }
+        
     }
 }
 

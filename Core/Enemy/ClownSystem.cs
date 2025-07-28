@@ -56,7 +56,7 @@ namespace ThePurified.AI
 
             riddle = GetComponent<ClownRiddle>();
 
-            ActivateAI();
+            //ActivateAI();
         }
 
         public void ActivateAI()

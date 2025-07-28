@@ -10,7 +10,7 @@ public class PlayerFootsteps : MonoBehaviour
 {
     private Vector3 lastPos;
 
-    [Tooltip("How far does it take player to walk to hear footstep sound")]
+    [Tooltip("Jak daleko musisz isc zeby uslyszec dzwieki krokow?")]
     [SerializeField] float walkingInterval;
     [SerializeField] float runningInterval;
 
@@ -55,7 +55,7 @@ public class PlayerFootsteps : MonoBehaviour
     private IEnumerator PlayFootsteps(float time)
     {
         stepping = true;
-        AudioManager.instance.PlayRandomWithTag("footstep", transform.position, 0.8f, 1f);
+        AudioManager.instance.PlayRandomWithTag("footstep", transform.position);
         lastPos = transform.position;
         yield return new WaitForSeconds(time);
         stepping = false;

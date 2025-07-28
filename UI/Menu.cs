@@ -27,6 +27,11 @@ namespace ThePurified.UI
         [Header("Scene Transition")]
         [SerializeField] Animator animator;
 
+        private void Start()
+        {
+            Cursor.lockState = CursorLockMode.None;
+        }
+
         public void Update()
         {
             if (Input.anyKey)

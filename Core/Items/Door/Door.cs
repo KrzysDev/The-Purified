@@ -28,6 +28,7 @@ public class Door : GameItem
 
     public override void OnItemInteract()
     {
+        
         HandleDoor();
     }
     /// <summary>
@@ -37,8 +38,6 @@ public class Door : GameItem
     {
         if (doorUnlocked)
         {
-
-            animator.SetBool("isOpen", true);
             animator.SetTrigger("open");
 
             animator.enabled = false;
