@@ -3,7 +3,8 @@ using ThePurified.PlayerSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI; 
+using UnityEngine.UI;
+using ThePurified.AudioSystem;
 
 namespace ThePurified.Items
 {
@@ -45,6 +46,18 @@ namespace ThePurified.Items
         [Header("Gdy haslo prawidlowe: ")]
         [Tooltip("wydarzenie ktore sie wywola gdy haslo w komputerze jest prawidlowe")]
         [SerializeField] UnityEvent onPasswordCorrect;
+
+        //dzwieki pisania na klawiaturze
+        bool anyNumPressed => Input.GetKeyDown(KeyCode.Alpha0) ||
+        Input.GetKeyDown(KeyCode.Alpha9) ||
+        Input.GetKeyDown(KeyCode.Alpha8) ||
+        Input.GetKeyDown(KeyCode.Alpha7) ||
+        Input.GetKeyDown(KeyCode.Alpha6) ||
+        Input.GetKeyDown(KeyCode.Alpha5) ||
+        Input.GetKeyDown(KeyCode.Alpha4) ||
+        Input.GetKeyDown(KeyCode.Alpha3) ||
+        Input.GetKeyDown(KeyCode.Alpha2) ||
+        Input.GetKeyDown(KeyCode.Alpha1);
 
         public override void OnItemInteract()
         {
@@ -92,7 +105,13 @@ namespace ThePurified.Items
 
             }
 
+            if (interacting && anyNumPressed)
+            {
+                AudioManager.instance.PlaySound("keyboard key");
+            }
+
         }
+
 
         /// <summary>
         /// zmienia pozycje {playerHead} (obiektu sledzonego przez cinemachine) interpolujac miedzy pozycjami uzywajac krzywej animacji.
@@ -100,6 +119,8 @@ namespace ThePurified.Items
         /// <param name="pos">pozycja do ktorej glowa gracza jest przenoszona</param>
         private IEnumerator Lerp(Vector3 pos)
         {
+            AudioManager.instance.PlaySound("zooming", 0.9f, 1.1f);
+
             float duration = 1f / zoomSpeed;
             float elapsed = 0f;
             float curveValue;

@@ -1,3 +1,4 @@
+using ThePurified.AudioSystem;
 using ThePurified.Items;
 using ThePurified.PlayerSystem;
 using UnityEngine;
@@ -21,6 +22,17 @@ public class Nose : GameItem
             InspectController.instance.SetItemToInspect(gameObject);
         }
 
+    }
+
+
+    public override void OnItemInspection()
+    {
+        AudioManager.instance.PlaySoundInPosition("clowns nose", transform.position, 0.9f, 1.1f);
+    }
+
+    public override void OnItemInspectionEnd()
+    {
+        AudioManager.instance.PlaySoundInPosition("clowns nose", transform.position, 0.9f, 1.1f);
     }
 
 }

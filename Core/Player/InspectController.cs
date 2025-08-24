@@ -73,6 +73,7 @@ namespace ThePurified.PlayerSystem
             PlayerMovement.movementEnabled = false;
 
             Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
 
             inspectedObjectOriginalPos = item.transform.position;
 
@@ -123,7 +124,7 @@ namespace ThePurified.PlayerSystem
         /// <returns></returns>
         private IEnumerator ObjectInspecting(bool destroyObject = false)
         {
-
+            //Debug.Log("InspectController - object inspecting");
             IInspection inspection = null;
 
             if (inspectPoint.transform.GetChild(0).TryGetComponent(out IInspection i))
@@ -181,6 +182,7 @@ namespace ThePurified.PlayerSystem
             PlayerMovement.movementEnabled = true;
 
             Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
 
             ResetInspectPoint();
 

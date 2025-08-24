@@ -11,8 +11,8 @@ namespace ThePurified.AudioSystem
     public class Sound
     {
         public AudioClip clip;
-        public string tag;
         public string name;
+        public string tag;
         public float volume;
         public float pitch;
         public bool loop;
@@ -73,6 +73,41 @@ namespace ThePurified.AudioSystem
 
         }
 
+        public void PlaySound(string name, float minPitch, float maxPitch)
+        {
+            if (instance == null)
+            {
+                Debug.LogWarning("there is no AudioManager in this scene");
+                return;
+            }
+
+            Sound s = sounds.Find(s => s.name == name);
+
+            if (s == null)
+            {
+                Debug.LogError($"There is no sound called {name}");
+                return;
+            }
+
+            GameObject soundObject = new GameObject($"SFX_{name}");
+
+            AudioSource audio = soundObject.AddComponent<AudioSource>();
+
+            audio.clip = s.clip;
+
+            audio.volume = s.volume;
+
+            audio.pitch = Random.Range(minPitch, maxPitch);
+
+            audio.loop = s.loop;
+
+            audio.Play();
+
+            if (!s.loop)
+                Destroy(soundObject, s.clip.length);
+
+        }
+
         ///<summary>
         //Odtwarza dzwiek o nazwie {name} w pozycji {position}
         ///</summary>
@@ -101,6 +136,53 @@ namespace ThePurified.AudioSystem
             audio.volume = s.volume;
 
             audio.pitch = s.pitch;
+
+            audio.loop = s.loop;
+
+            audio.spatialBlend = 1;
+
+            audio.maxDistance = s.maxDistance;
+            audio.minDistance = s.minDistance;
+
+            soundObject.transform.position = position;
+
+            audio.Play();
+
+            if (!audio.loop)
+                Destroy(soundObject, audio.clip.length);
+        }
+        /// <summary>
+        /// Odtwarza dzwiek w pozycji {position} z losowym pitchem.
+        /// </summary>
+        /// <param name="name">nazwa dzwieku</param>
+        /// <param name="position">pozycja dzwieku w swiecie gry</param>
+        /// <param name="minPitch">najmniejsza wartosc losowa pitcha</param>
+        /// <param name="maxPitch">najwieksza wartosc losowa pitcha</param>
+        public void PlaySoundInPosition(string name, Vector3 position, float minPitch, float maxPitch)
+        {
+            if (instance == null)
+            {
+                Debug.LogWarning("there is no AudioManager in this scene");
+                return;
+            }
+
+            Sound s = sounds.Find(s => s.name == name);
+
+            if (s == null)
+            {
+                Debug.LogError($"There is no sound called {name}");
+                return;
+            }
+
+            GameObject soundObject = new GameObject($"SFX_{name}");
+
+            AudioSource audio = soundObject.AddComponent<AudioSource>();
+
+            audio.clip = s.clip;
+
+            audio.volume = s.volume;
+
+            audio.pitch = Random.Range(minPitch, maxPitch);
 
             audio.loop = s.loop;
 
@@ -166,11 +248,12 @@ namespace ThePurified.AudioSystem
             audio.Play();
 
             return audio;
-            
+
         }
         ///<summary>
         //Puszcza losowy dzwiek z tagiem {tag}.
         ///</summary>
+        int previousRandomIndex = 0;
         public void PlayRandomWithTag(string tag)
         {
             if (instance == null)
@@ -187,7 +270,13 @@ namespace ThePurified.AudioSystem
                 return;
             }
 
-            int randomIndex = Random.Range(0, matching.Count);
+            int randomIndex = 0;
+
+            do
+            {
+                randomIndex = Random.Range(0, matching.Count);
+            } while (previousRandomIndex == randomIndex);
+            previousRandomIndex = randomIndex;
 
             PlaySound(matching[randomIndex].name);
         }

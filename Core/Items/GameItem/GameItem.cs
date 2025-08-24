@@ -6,7 +6,7 @@ namespace ThePurified.Items
     /// <summary>
     /// Dziedziczą ją wszystkie itemy w grze z ktorymi gracz wchodzi w interakcje. Przechowuje logike interakcji z itemami w grze.
     /// </summary>
-    public abstract class GameItem : MonoBehaviour, IInteraction, IInteractionHover
+    public abstract class GameItem : MonoBehaviour, IInteraction, IInteractionHover, IInspection
     {
         /// <summary>
         /// funkcja wywolywana na obiekcie dziedziczącym te klasę kiedy gracz wejdzie z nim w interakcje
@@ -29,6 +29,22 @@ namespace ThePurified.Items
         /// funkcja wywolywana na obiekcie dziedziczacym te klase w pierwszej klatce gry
         /// </summary>
         public virtual void ItemStart() { }
+
+        /// <summary>
+        /// funkcja wywolywana gdy item jest inspektowany (w pierwszej klatce inspekcji)
+        /// </summary>
+        public virtual void OnItemInspection() { }
+
+        /// <summary>
+        /// funkcja wywolywana w kazdej klatce gdy inspekcja trwa.
+        /// </summary>
+        public virtual void WhileItemInspection() { }
+        
+        /// <summary>
+        /// funkcja wywolywana gdy inspekcja zostala zakonczona.
+        /// </summary>
+
+        public virtual void OnItemInspectionEnd() { }
 
         public void OnInteract()
         {
@@ -55,6 +71,21 @@ namespace ThePurified.Items
         private void Start()
         {
             ItemStart();
+        }
+
+        public void OnInspection()
+        {
+            OnItemInspection();
+        }
+
+        public void WhileInspection()
+        {
+            WhileItemInspection();
+        }
+
+        public void OnInspectionEnd()
+        {
+            OnItemInspectionEnd();
         }
 
         //TODO: display interaction icon.

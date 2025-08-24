@@ -2,6 +2,7 @@ using System.Collections;
 using ThePurified.Items;
 using ThePurified.AudioSystem;
 using UnityEngine;
+using UnityEditor.Rendering;
 
 /// <summary>
 ///klasa uzywana przez drzwi
@@ -18,7 +19,7 @@ public class Door : GameItem
 
     private float newAngle;
     private float currentAngle;
-    bool isOpened = false;
+    public bool isOpened = false;
     Coroutine currentCoroutine = null;
 
     [Header("Door animator")]
@@ -28,7 +29,7 @@ public class Door : GameItem
 
     public override void OnItemInteract()
     {
-        
+
         HandleDoor();
     }
     /// <summary>
@@ -38,7 +39,7 @@ public class Door : GameItem
     {
         if (doorUnlocked)
         {
-            animator.SetTrigger("open");
+            animator.SetTrigger("return");
 
             animator.enabled = false;
 
@@ -58,8 +59,9 @@ public class Door : GameItem
         }
         else
         {
-            animator.SetTrigger("open");
+            animator.SetTrigger("close");
             AudioManager.instance.PlaySoundInPosition("doorClosed", transform.position);
+            animator.SetTrigger("return");
         }
     }
 
@@ -76,11 +78,23 @@ public class Door : GameItem
         while (elapsed < openingDuration)
         {
             doorHolder.transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, Mathf.LerpAngle(currentAngle, newAngle, elapsed), transform.localRotation.eulerAngles.z);
-            elapsed +=  Time.deltaTime;
+            elapsed += Time.deltaTime;
             yield return null;
         }
 
         doorHolder.transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, newAngle, transform.localRotation.eulerAngles.z);
 
     }
+
+
+    public void Open(float angle)
+    {
+        StartCoroutine(RotateDoor(angle));
+    }
+
+    public void Close()
+    {
+        StartCoroutine(RotateDoor(closeAngle));
+    }
+
 }

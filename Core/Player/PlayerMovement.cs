@@ -57,6 +57,7 @@ namespace ThePurified.PlayerSystem
                 Vector3 forward = playerCamera.transform.forward;
 
                 forward.y = right.y = 0;
+
                 right.Normalize();
                 forward.Normalize();
 

@@ -37,7 +37,7 @@ namespace ThePurified.AI
 
 
         [Tooltip("wszystkie generatory na mapie")]
-        [SerializeField] List<Generator> generators = new List<Generator>();
+        public Generator[] generators;
 
         private ClownRiddle riddle; //zagadka na clownie
 
@@ -49,6 +49,11 @@ namespace ThePurified.AI
         [Header("Gdy wszystkie generatory sie wlacza: ")]
         [SerializeField] UnityEvent onAllGeneratorsOff;
 
+        //animacje klauna
+
+        [SerializeField] Animator clownAnim;
+
+
 
         void Start()
         {
@@ -56,7 +61,7 @@ namespace ThePurified.AI
 
             riddle = GetComponent<ClownRiddle>();
 
-            //ActivateAI();
+            ActivateAI();
         }
 
         public void ActivateAI()
@@ -87,7 +92,7 @@ namespace ThePurified.AI
         /// <returns> prawda jesli wszystkie generatory sa wylaczone </returns>
         bool AllGeneratorsAreOff()
         {
-            for (int i = 0; i < generators.Count; i++)
+            for (int i = 0; i < generators.Length; i++)
             {
                 if (generators[i].active)
                 {
@@ -114,7 +119,12 @@ namespace ThePurified.AI
         /// </summary>
         private IEnumerator ActivateClown()
         {
-            yield return new WaitForSeconds(2f); //TODO: tutaj jakas animacja wstawania budzenia sie czy cos takiego.
+            clownAnim.SetBool("active", true);
+
+            AnimatorStateInfo info = clownAnim.GetCurrentAnimatorStateInfo(0);
+            float len = info.length;
+
+            yield return new WaitForSeconds(len); // odczekaj az animacja sie skonczy.
 
             if (riddle.inInteraction)
             {
@@ -132,6 +142,8 @@ namespace ThePurified.AI
         ///</summary>
         public IEnumerator Deactivate(float seconds)
         {
+            clownAnim.SetBool("active", false);
+
             clownAgent.isStopped = true;
             clownAgent.ResetPath();
 
@@ -144,6 +156,8 @@ namespace ThePurified.AI
             activated = false;
 
             yield return new WaitForSeconds(seconds);
+
+            clownAnim.SetBool("active", true);
 
             onAllGeneratorsOn.Invoke();
 
@@ -167,7 +181,7 @@ namespace ThePurified.AI
         private void ActivateAllGenerators()
         {
             Generator.allGeneratorsAreOff = false;
-            for (int i = 0; i < generators.Count; i++)
+            for (int i = 0; i < generators.Length; i++)
             {
                 generators[i].TurnOn();
             }

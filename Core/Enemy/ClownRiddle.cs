@@ -5,6 +5,7 @@ using UnityEngine;
 using ThePurified.PlayerSystem;
 using UnityEngine.Events;
 using ThePurified.AI;
+using System.Linq;
 
 namespace ThePurified.Ai
 {
@@ -71,7 +72,7 @@ namespace ThePurified.Ai
         #region camera zoom
         public override void OnItemInteract()
         {
-            if (!inInteraction && !ClownSystem.activated)
+            if (!inInteraction && (!ClownSystem.activated || ClownSystem.instance.generators.Length == 0))
             {
                 StartCoroutine(ZoomIn());
             }
