@@ -4,10 +4,9 @@ using UnityEngine;
 
 using ThePurified.PlayerSystem;
 using UnityEngine.Events;
-using ThePurified.AI;
 using System.Linq;
 
-namespace ThePurified.Ai
+namespace ThePurified.AI
 {
     ///<summary>
     ///klasa przechowujaca logike obslugiwania zagadki znajdującej sie na clown'ie

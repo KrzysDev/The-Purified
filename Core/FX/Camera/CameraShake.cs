@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace ThePurified.FX
 {
+    /// <summary>
+    /// Odpowiada za trzesienie kamery.
+    /// </summary>
     [RequireComponent(typeof(CinemachineBasicMultiChannelPerlin))]
     public class CameraShake : MonoBehaviour
     {
@@ -16,14 +19,14 @@ namespace ThePurified.FX
             perlin = GetComponent<CinemachineBasicMultiChannelPerlin>();
         }
 
-       /* private void Update()
+        private void Update()
         {
             if(Input.GetKeyDown(KeyCode.R))
             {
                 Shake(0.15f, 5f, 0.5f);
             }
             
-        } */
+        } 
 
         public void Shake(float duration, float amplitude, float frequency)
         {

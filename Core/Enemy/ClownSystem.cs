@@ -3,7 +3,6 @@ using ThePurified.Items;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
-using ThePurified.Ai;
 using UnityEngine.Events;
 
 namespace ThePurified.AI
