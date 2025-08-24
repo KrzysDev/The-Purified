@@ -1,45 +1,56 @@
 using System.Collections;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace ThePurified.FX
 {
+    [RequireComponent(typeof(CinemachineBasicMultiChannelPerlin))]
     public class CameraShake : MonoBehaviour
     {
         public static CameraShake instance;
+        CinemachineBasicMultiChannelPerlin perlin;
 
         private void Start()
         {
             instance = this;
+            perlin = GetComponent<CinemachineBasicMultiChannelPerlin>();
         }
 
-        /*private void Update()
+       /* private void Update()
         {
             if(Input.GetKeyDown(KeyCode.R))
             {
-                Shake(0.15f, 0.2f);
+                Shake(0.15f, 5f, 0.5f);
             }
             
-        }*/
+        } */
 
-        public void Shake(float duration, float amount)
+        public void Shake(float duration, float amplitude, float frequency)
         {
-            StartCoroutine(ShakeCamera(duration, amount));
+            StartCoroutine(ShakeCamera(duration, amplitude, frequency));
         }
 
-        private IEnumerator ShakeCamera(float duration, float amount)
+        private IEnumerator ShakeCamera(float duration, float amplitude, float frequency)
         {
             float elapsed = 0;
 
-            Vector3 start = transform.localPosition;
+            float currentFrequency = frequency;
+
+            perlin.AmplitudeGain = amplitude;
+            perlin.FrequencyGain = frequency;
 
             while(elapsed < duration)
             {
-                transform.localPosition = start + new Vector3(Random.Range(-1, 1) * amount, Random.Range(-1, 1) * amount, start.z);
                 elapsed += Time.deltaTime;
+
+                currentFrequency = Mathf.Lerp(frequency, 0, elapsed);
+
+                perlin.FrequencyGain = currentFrequency;
+
                 yield return null;
             }
 
-            transform.localPosition = start;
+            perlin.FrequencyGain = 0;
         }
     }
 }
