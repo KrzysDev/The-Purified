@@ -44,7 +44,7 @@ namespace ThePurified.Items
             Quaternion start = teddyDoor.localRotation;
             while (elapsed < rotationDuration)
             {
-                teddyDoor.localRotation = Quaternion.Lerp(start, endDoorRotation, elapsed);
+                teddyDoor.localRotation = Quaternion.Lerp(start, endDoorRotation, elapsed); 
                 elapsed += Time.deltaTime;
                 yield return null;
             }
