@@ -12,7 +12,6 @@ public class ClownsNoseKey : InspectionItem
     {
         AudioManager.instance.PlaySoundInPosition("keys pick up", transform.position);
         door.doorUnlocked = true;
-        //TODO: play some audio.
         Destroy(gameObject);
     }
 }
