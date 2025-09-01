@@ -15,13 +15,16 @@ namespace ThePurified.Flashlight
 
         [SerializeField] Animator animator;
 
+        public static bool controllerEnabled = true;
+
         void Start()
         {
             flashligthLight.SetActive(false);
         }
         void Update()
         {
-            HandleFlashlight();
+            if(controllerEnabled)
+                HandleFlashlight();
         }
 
         /// <summary>

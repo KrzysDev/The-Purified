@@ -1,5 +1,6 @@
 
 using ThePurified.PlayerSystem;
+using ThePurified.LevelManagement;
 using UnityEngine;
 
 namespace ThePurified.Items
@@ -8,7 +9,15 @@ namespace ThePurified.Items
     {
         public override void OnItemInteract()
         {
-            InspectController.instance.SetItemToInspect(gameObject);
+            if(LevelManager.instance.currentLevel == LevelManager.Level.Level1)
+            {
+                if(LevelManager.instance.GetCurrentQuest() == (int)LevelManager.Level1Quests.FindKey)
+                {
+                    InspectController.instance.SetItemToInspect(gameObject);
+                }
+                
+            }
+            
         }
 
     }

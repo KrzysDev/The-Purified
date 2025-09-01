@@ -29,7 +29,7 @@ public class Door : GameItem
 
     public override void OnItemInteract()
     {
-
+        //Debug.Log($"{nameof(Door)} interakcja");
         HandleDoor();
     }
     /// <summary>
@@ -39,9 +39,13 @@ public class Door : GameItem
     {
         if (doorUnlocked)
         {
-            animator.SetTrigger("return");
+            if(animator!=null)
+            {
+                animator.SetTrigger("return");
 
-            animator.enabled = false;
+                animator.enabled = false;
+            }
+
 
             if (currentCoroutine != null)
             {
@@ -59,8 +63,10 @@ public class Door : GameItem
         }
         else
         {
+            if(animator!=null)
             animator.SetTrigger("close");
             AudioManager.instance.PlaySoundInPosition("doorClosed", transform.position);
+            if(animator!=null)
             animator.SetTrigger("return");
         }
     }
@@ -77,12 +83,12 @@ public class Door : GameItem
 
         while (elapsed < openingDuration)
         {
-            doorHolder.transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, Mathf.LerpAngle(currentAngle, newAngle, elapsed), transform.localRotation.eulerAngles.z);
+            doorHolder.transform.localRotation = Quaternion.Euler(doorHolder.localRotation.eulerAngles.x, Mathf.LerpAngle(currentAngle, newAngle, elapsed), doorHolder.localRotation.eulerAngles.z);
             elapsed += Time.deltaTime;
             yield return null;
         }
 
-        doorHolder.transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, newAngle, transform.localRotation.eulerAngles.z);
+        doorHolder.transform.localRotation = Quaternion.Euler(doorHolder.localRotation.eulerAngles.x, newAngle, doorHolder.localRotation.eulerAngles.z);
 
     }
 
