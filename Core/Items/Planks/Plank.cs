@@ -37,7 +37,7 @@ namespace ThePurified.Items
             {
                 LevelManager.instance.NextQuest();
                 changedQuest = true;
-                Debug.Log("mozna juz otworzyc drzwi!");
+                //Debug.Log("mozna juz otworzyc drzwi!");
                 BasementDoor.instance.Open();
             }
         }
