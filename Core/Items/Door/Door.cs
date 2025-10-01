@@ -27,10 +27,19 @@ public class Door : GameItem
     [SerializeField] Animator animator;
     public bool doorUnlocked = false;
 
+    [Header("Door Sound")]
+    [SerializeField] string openingSoundName;
+    [SerializeField] string closingSoundName;
+
     public override void OnItemInteract()
     {
         //Debug.Log($"{nameof(Door)} interakcja");
         HandleDoor();
+
+        if (doorUnlocked)
+        {
+            isOpened = !isOpened;
+        }
     }
     /// <summary>
     /// obsluga logiki drzwi
@@ -56,9 +65,18 @@ public class Door : GameItem
 
             currentCoroutine = StartCoroutine(RotateDoor(newAngle));
 
-            isOpened = !isOpened;
+            if (!isOpened)
+            {
+                Debug.Log("zamkniete wiec otwieram");
+                AudioManager.instance.PlaySoundInPosition(openingSoundName, transform.position, 0.95f, 1.05f);
+            }
 
-            AudioManager.instance.PlaySoundInPosition("doorOpen", transform.position);
+            else
+            {
+                Debug.Log("otwarte wiec zamykam");
+                AudioManager.instance.PlaySoundInPosition(closingSoundName, transform.position, 0.95f, 1.05f);
+            }
+                
 
         }
         else
@@ -83,7 +101,7 @@ public class Door : GameItem
 
         while (elapsed < openingDuration)
         {
-            doorHolder.transform.localRotation = Quaternion.Euler(doorHolder.localRotation.eulerAngles.x, Mathf.LerpAngle(currentAngle, newAngle, elapsed), doorHolder.localRotation.eulerAngles.z);
+            doorHolder.transform.localRotation = Quaternion.Euler(doorHolder.localRotation.eulerAngles.x, Mathf.LerpAngle(currentAngle, newAngle, elapsed / openingDuration), doorHolder.localRotation.eulerAngles.z);
             elapsed += Time.deltaTime;
             yield return null;
         }

@@ -44,14 +44,21 @@ namespace ThePurified.UI
 
         public void Begin()
         {
+            //bug.Log("guzik");
+            AudioManager.instance.PlaySound("Menu Bass Drop");  
             StartCoroutine(LoadScene(SceneManager.GetActiveScene().buildIndex + 1));
         }
 
         private IEnumerator LoadScene(int sceneIndex)
         {
-            AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
-
             animator.SetBool("transition", true);
+
+            while (!animator.GetCurrentAnimatorStateInfo(0).IsName("FadeIn"))
+            {
+                yield return null; 
+            }
+
+            AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
 
             yield return new WaitForSeconds(info.length);
 

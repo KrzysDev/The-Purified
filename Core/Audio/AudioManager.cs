@@ -11,6 +11,7 @@ namespace ThePurified.AudioSystem
     public class Sound
     {
         public AudioClip clip;
+        public bool onAwake = false;
         public string name;
         public string tag;
         public float volume;
@@ -32,6 +33,8 @@ namespace ThePurified.AudioSystem
         public void Awake()
         {
             instance = this; //gra jest skonstruowana w ten sposob, ze audiomanager w sumie nie potrzebowal miec singletonu.
+
+            ActivateOnAwakeSounds();
         }
 
 
@@ -250,6 +253,21 @@ namespace ThePurified.AudioSystem
             return audio;
 
         }
+
+        public AudioSource GetPlayingSoundWithName(string name)
+        {
+            AudioSource[] audioObjects = FindObjectsOfType<AudioSource>();
+
+            foreach (AudioSource a in audioObjects)
+            {
+                if(a.gameObject.name == $"SFX_{name}")
+                {
+                    return a;
+                }
+            }
+
+            return null;
+        }
         ///<summary>
         //Puszcza losowy dzwiek z tagiem {tag}.
         ///</summary>
@@ -347,6 +365,17 @@ namespace ThePurified.AudioSystem
             matching[randomIndex].pitch = randomPitch;
 
             PlaySoundInPosition(matching[randomIndex].name, pos);
+        }
+
+        public void ActivateOnAwakeSounds()
+        {
+            foreach (var sound in sounds)
+            {
+                if (sound.onAwake)
+                {
+                    PlaySound(sound.name);
+                }
+            }
         }
     }
 }

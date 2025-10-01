@@ -1,9 +1,13 @@
 using System.Collections;
+using ThePurified.AudioSystem;
 using ThePurified.PlayerSystem;
 using UnityEngine;
 
 namespace ThePurified.Items 
 {
+    /// <summary>
+    /// klasa obslugujaca logike nosa misia na ktory mozna kliknac zeby otworzyc klapkê z kluczykiem.
+    /// </summary>
     public class TeddyNose : InspectionItem
     {
         [Tooltip("koncowa rotacja po nacisnieciu na nosek")]
@@ -15,7 +19,7 @@ namespace ThePurified.Items
        
         public override void OnPressed()
         {
-            Debug.Log("nacisnieto");
+            AudioManager.instance.PlaySoundInPosition("teddy nose", transform.position);
             StartCoroutine(Rotate());
         }
 
@@ -39,6 +43,7 @@ namespace ThePurified.Items
 
         private IEnumerator OpenTeddy()
         {
+            //TODO: jakis dzwiêk otwierania misia
             float elapsed = 0;
 
             Quaternion start = teddyDoor.localRotation;

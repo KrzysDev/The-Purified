@@ -3,61 +3,89 @@ using ThePurified.AudioSystem;
 using System.Collections;
 using ThePurified.Items;
 
-/// <summary>
-/// Odtwarza dzwieki krokow gdy gracz chodzi.
-/// </summary>
-public class PlayerFootsteps : MonoBehaviour
+
+
+namespace ThePurified.PlayerSystem 
 {
-    private Vector3 lastPos;
-
-    [Tooltip("Jak daleko musisz isc zeby uslyszec dzwieki krokow?")]
-    [SerializeField] float walkingInterval;
-    [SerializeField] float runningInterval;
-
-    private bool stepping = false;
-
-    private bool isMoving => Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0;
-
-    private bool isRunning => Input.GetKey(KeyCode.LeftShift);
-
-    Coroutine currentCoroutine;
-
-
-
-    void Start()
+    /// <summary>
+    /// Odtwarza dzwieki krokow gdy gracz chodzi.
+    /// </summary>
+    public class PlayerFootsteps : MonoBehaviour
     {
-        lastPos = transform.position;
-    }
+        private Vector3 lastPos;
 
-    private void Update()
-    {
-        HandleFootstepSound();
-    }
+        [Tooltip("Jak daleko musisz isc zeby uslyszec dzwieki krokow?")]
+        [SerializeField] float walkingInterval;
+        [SerializeField] float runningInterval;
 
-    private void HandleFootstepSound()
-    {
-        if (!stepping && isMoving && lastPos != transform.position)
+        private bool stepping = false;
+
+        private bool isMoving => Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0;
+
+        private bool isRunning => Input.GetKey(KeyCode.LeftShift);
+
+        Coroutine currentCoroutine;
+
+        [Header("Random footstep wood creaking")]
+        [SerializeField] bool creakingEnabled = false;
+        [SerializeField] int minTimeBetweenCreaks = 5;
+        [SerializeField] int maxTimeBetweenCreaks = 20;
+
+        private int creakTimer;
+
+        private bool creakReady = true;
+
+
+        void Start()
         {
-            if (isRunning)
-            {
-                if (currentCoroutine != null)
-                    StopCoroutine(currentCoroutine);
+            lastPos = transform.position;
+        }
 
-                currentCoroutine = StartCoroutine(PlayFootsteps(runningInterval));
-            }
-            else
+        private void Update()
+        {
+            HandleFootstepSound();
+        }
+
+        private void HandleFootstepSound()
+        {
+            if (!stepping && isMoving && lastPos != transform.position)
             {
-                currentCoroutine = StartCoroutine(PlayFootsteps(walkingInterval));
+                if (isRunning)
+                {
+                    if (currentCoroutine != null)
+                        StopCoroutine(currentCoroutine);
+
+                    currentCoroutine = StartCoroutine(PlayFootsteps(runningInterval));
+                }
+                else
+                {
+                    currentCoroutine = StartCoroutine(PlayFootsteps(walkingInterval));
+                }
+            }
+
+            if(isMoving && creakReady && creakingEnabled)
+            {
+                AudioManager.instance.PlayRandomWithTag("creak", transform.position, 0.9f, 1.1f);
+                creakTimer = Random.Range(minTimeBetweenCreaks, maxTimeBetweenCreaks);
+                StartCoroutine(CreakCooldown());
             }
         }
-    }
 
-    private IEnumerator PlayFootsteps(float time)
-    {
-        stepping = true;
-        AudioManager.instance.PlayRandomWithTag("footstep", transform.position);
-        lastPos = transform.position;
-        yield return new WaitForSeconds(time);
-        stepping = false;
+        private IEnumerator CreakCooldown()
+        {
+            creakReady = false;
+            yield return new WaitForSeconds(creakTimer);
+            creakReady = true;
+        }
+
+        private IEnumerator PlayFootsteps(float time)
+        {
+            stepping = true;
+            AudioManager.instance.PlayRandomWithTag("footstep", transform.position);
+            lastPos = transform.position;
+            yield return new WaitForSeconds(time);
+            stepping = false;
+        }
     }
 }
+

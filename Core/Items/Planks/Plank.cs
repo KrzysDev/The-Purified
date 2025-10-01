@@ -1,25 +1,15 @@
 
 using ThePurified.LevelManagement;
 using UnityEngine;
+using ThePurified.AudioSystem;
 
 namespace ThePurified.Items 
 {
-
-    [RequireComponent(typeof(Rigidbody))]
     public class Plank : GameItem
     {
-        Rigidbody body;
-
         public static int planksTaken = 0;
 
         private bool interacted = false;
-
-        private bool changedQuest = false;
-        public override void ItemStart()
-        {
-            body = GetComponent<Rigidbody>();
-            body.isKinematic = true;
-        }
 
         public override void OnItemInteract()
         {
@@ -27,21 +17,24 @@ namespace ThePurified.Items
             {
                 interacted = true;
                 planksTaken++;
-                body.isKinematic = false;
+
+                if(planksTaken != 3)
+                {
+                    AudioManager.instance.PlaySoundInPosition("plank fall", transform.position, 1f, 1.1f);
+                    Destroy(gameObject);
+                }
+                else
+                {
+                    LevelManager.instance.NextQuest();
+                    BasementDoor.instance.Open();
+                    AudioManager.instance.PlaySoundInPosition("plank fall", transform.position, 1f, 1.1f);
+                    Destroy(gameObject);
+                }
             }
         }
 
-        public override void ItemUpdate()
-        {
-            if(planksTaken == 3 && !changedQuest)
-            {
-                LevelManager.instance.NextQuest();
-                changedQuest = true;
-                //Debug.Log("mozna juz otworzyc drzwi!");
-                BasementDoor.instance.Open();
-            }
-        }
     }
+    
 
 }
 
